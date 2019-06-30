@@ -1,0 +1,196 @@
+import tkinter as tk
+from tkinter import ttk
+import random,time
+from tkinter import messagebox
+LARGE_FONT <-("Verdana",15)
+CLASS Game(tk.Tk):
+
+
+	def __init__(self,*args,**kwargs):
+ 
+
+		tk.Tk.__init__(self,*args,**kwargs)
+		tk.Tk.wm_title(self,'game')
+		container <- tk.Frame(self)
+		container.pack(side <-"top",fill= "both", expand =True)
+		container.grid_rowconfigure(0,weight=1)
+		container.grid_columnconfigure(0,weight=1)
+		 frames={}
+		for F in (StartPage,PageOne,PageTwo):
+  ENDFOR
+			frame =F(container,self)
+			 frames[F] =frame
+			frame.grid(row=0,column =0, sticky ="nsew")
+		 show_frame(StartPage)
+	ENDFUNCTION
+	def show_frame(self,cont):
+ 
+
+		frame <-  frames[cont]
+		frame.tkraise()
+	ENDFUNCTION
+CLASS StartPage(tk.Frame):
+
+
+	def __init__(self,parent,controller):
+ 
+
+		tk.Frame.__init__(self,parent)
+		label =tk.Label(self, text ="Select your level",font = LARGE_FONT)
+		label.pack(pady =10, padx=10)
+		btn1 <- ttk.Button(self,text <-"level1",
+			command =lambda:controller.show_frame(PageOne))
+		btn2 <- ttk.Button(self,text <-"level2", command =lambda:controller.show_frame(PageTwo))
+		btn1.pack()
+		btn2.pack()
+	ENDFUNCTION
+CLASS PageOne(tk.Frame):
+
+
+	def __init__(self,parent,controller):
+ 
+
+		tk.Frame.__init__(self,parent)
+		 buttons <- [[tk.Button(self,width=25,height=12, command=lambda row=row, column=column:  choose_tile(row, column)) for column in range(3)] for row in range(4)]
+                                                                                                                            ENDFOR
+		for row in range(4):
+  ENDFOR
+			for column in range(3):
+   ENDFOR
+				 buttons[row][column].grid(row=row, column=column)
+		 first <- None
+		 remeber_numbers=[]
+		 score =0
+		 draw_board()
+	ENDFUNCTION
+	def draw_board(self):
+ 
+
+		 answer <- list('123123123123')
+		random.shuffle( answer)
+		 answer <- [ answer[:3],  answer[3:6],  answer[6:9],  answer[9:]]
+		for row in  buttons:
+  ENDFOR
+			for button in row:
+   ENDFOR
+				button.config(text='', state=tk.NORMAL)
+		 start_time <- time.monotonic()
+	ENDFUNCTION
+	def choose_tile(self, row, column):
+ 
+
+		 buttons[row][column].config(text= answer[row][column],fg ='green')
+		 buttons[row][column].config(state=tk.DISABLED)
+		duration <- time.monotonic() -  start_time
+		if(duration<60):
+  ENDIF
+			if not  first:
+   ENDIF
+				 first <- (row, column)
+			ELSE:
+				a,b <-  first
+				if  answer[row][column] =  answer[a][b]:
+    ENDIF
+					 answer[row][column] <- ''
+					 answer[a][b] <- ''
+					 score <- score+20
+					if not any(''.join(row) for row in  answer):
+     ENDIF
+                             ENDFOR
+						timer <- time.monotonic() -  start_time
+						 score <-  score+int(timer)
+						 after(1000,  draw_board)
+				ELSE:
+					 score <- score-5
+					 after(2000,  hide_tiles, row, column, a, b)
+				 first <- None
+		ELSE:
+			 after(1000,  draw_board)
+		ENDFUNCTION
+	def hide_tiles(self, x1, y1, x2, y2):
+ 
+
+		 buttons[x1][y1].config(text='', state=tk.NORMAL)
+		 buttons[x2][y2].config(text='', state=tk.NORMAL)
+	ENDFUNCTION
+
+ENDCLASS
+CLASS PageTwo(tk.Frame):
+
+
+	def __init__(self,parent,controller):
+ ENDFUNCTION
+
+		 cont =controller
+		tk.Frame.__init__(self,parent)
+		 buttons <- [[tk.Button(self,width=25,height=12, command=lambda row=row, column=column:  choose_tile(row, column)) for column in range(3)] for row in range(4)]
+                                                                                                                            ENDFOR
+		for row in range(4):
+  ENDFOR
+			for column in range(3):
+   ENDFOR
+				 buttons[row][column].grid(row=row, column=column)
+		 first <- None
+		 remeber_numbers=[]
+		 score =0
+		 draw_board()
+	def configBoard(self):
+ ENDFUNCTION
+
+		for row in  buttons:
+  ENDFOR
+			for button in row:
+   ENDFOR
+				button.config(text='', state=tk.NORMAL)
+	def draw_board(self):
+ ENDFUNCTION
+
+		 answer <- list('123123123123')
+		random.shuffle( answer)
+		 answer <- [ answer[:3],  answer[3:6],  answer[6:9],  answer[9:]]
+		for i,row in enumerate( buttons):
+  ENDFOR
+			for j,button in enumerate(row):
+   ENDFOR
+				button.config(text= answer[i][j], state=tk.DISABLED)
+		 after(6000,  configBoard)
+		 start_time <- time.monotonic()
+	def choose_tile(self, row, column):
+ ENDFUNCTION
+
+		 buttons[row][column].config(text= answer[row][column],fg ='green')
+		 buttons[row][column].config(state=tk.DISABLED)
+		duration <- time.monotonic() -  start_time
+		if(duration<60):
+  ENDIF
+			if not  first:
+   ENDIF
+				 first <- (row, column)
+			ELSE:
+				a,b <-  first
+				if  answer[row][column] =  answer[a][b]:
+    ENDIF
+					 answer[row][column] <- ''
+					 answer[a][b] <- ''
+					 score <- score+20
+					if not any(''.join(row) for row in  answer):
+     ENDIF
+                             ENDFOR
+						timer <- time.monotonic() -  start_time
+						 score <-  score+int(timer)
+						 after(1000, lambda: cont.show_frame(PageOne))
+				ELSE:
+					 score <- score-5
+					 after(2000,  hide_tiles, row, column, a, b)
+				 first <- None
+		ELSE:
+			 after(1000,lambda: cont.show_frame(PageOne))
+	def hide_tiles(self, x1, y1, x2, y2):
+ ENDFUNCTION
+
+		 buttons[x1][y1].config(text='', state=tk.NORMAL)
+		 buttons[x2][y2].config(text='', state=tk.NORMAL)
+ENDCLASS
+app <- Game()
+
+app.mainloop()
